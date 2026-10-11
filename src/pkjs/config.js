@@ -24,8 +24,18 @@ module.exports = [
     items: [
       { type: 'heading', defaultValue: 'Time' },
       {
-        type: 'select', messageKey: 'TimeFont', label: 'Time font', defaultValue: '0',
-        options: [{ label: 'Roboto', value: '0' }, { label: 'Tomorrow', value: '1' }]
+        type: 'select', messageKey: 'TimeFont', label: 'Time font', defaultValue: '5',
+        description: 'Condensed fonts fit without stretching. Roboto and Tomorrow are narrowed to fit.',
+        options: [
+          { label: 'Barlow Condensed SemiBold', value: '5' },
+          { label: 'Barlow Condensed Bold', value: '6' },
+          { label: 'Barlow Condensed Medium', value: '4' },
+          { label: 'Barlow Condensed Regular', value: '3' },
+          { label: 'Barlow Condensed Light', value: '2' },
+          { label: 'Bebas Neue', value: '7' },
+          { label: 'Roboto (narrowed)', value: '0' },
+          { label: 'Tomorrow (narrowed)', value: '1' }
+        ]
       },
       {
         type: 'select', messageKey: 'BarFont', label: 'Date, weather and battery font', defaultValue: '0',

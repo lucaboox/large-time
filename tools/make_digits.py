@@ -24,12 +24,19 @@ OUT = os.path.join(HERE, '..', 'resources', 'digits')
 DIGIT_H = 66        # ink height of the digits in pixels
 MAX_W = 140         # widest allowed time, in pixels
 FIT_GAP = 2         # digit spacing assumed when fitting (the watch tightens to 1 if needed)
-MAX_SQUEEZE = 0.75  # never wider than this, so tall digits keep their character
+MAX_SQUEEZE = 1.0   # natural width; fonts are only narrowed if a time wouldn't fit
 
 # (file prefix, font file)
+# Order matches the TimeFont setting values in src/pkjs/config.js
 FONTS = [
     ('roboto', 'Roboto-Bold.ttf'),
     ('tomorrow', 'Tomorrow-SemiBold.ttf'),
+    ('barlowl', 'BarlowCondensed-Light.ttf'),
+    ('barlowr', 'BarlowCondensed-Regular.ttf'),
+    ('barlowm', 'BarlowCondensed-Medium.ttf'),
+    ('barlows', 'BarlowCondensed-SemiBold.ttf'),
+    ('barlowb', 'BarlowCondensed-Bold.ttf'),
+    ('bebas', 'BebasNeue-Regular.ttf'),
 ]
 
 TIMES_12H = ['%d:%02d' % (h, m) for h in range(1, 13) for m in range(60)]

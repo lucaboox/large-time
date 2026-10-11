@@ -37,7 +37,7 @@ typedef struct {
   uint8_t batt_colors;       // 0 = icon color, 1 = red when low, 2 = green/yellow/red by level
   uint8_t weather_interval;  // minutes
   uint8_t wx_outline;        // colored weather outlines on a dark bar: 0 = match each shape, 1 = icon color
-  uint8_t time_font;         // 0 = Roboto, 1 = Tomorrow
+  uint8_t time_font;         // index into DIGIT_RES (see the TimeFont setting)
   uint8_t bar_font;          // 0 = Gothic (system), 1 = Tomorrow
 } Settings;
 
@@ -76,10 +76,17 @@ static time_t s_last_wx_req;
   RESOURCE_ID_##P##_3, RESOURCE_ID_##P##_4, RESOURCE_ID_##P##_5, RESOURCE_ID_##P##_6, \
   RESOURCE_ID_##P##_7, RESOURCE_ID_##P##_8, RESOURCE_ID_##P##_9, RESOURCE_ID_##P##_COLON }
 
-// [font][narrow][glyph]
-static const uint32_t DIGIT_RES[2][2][11] = {
+// [font][narrow][glyph]; font order matches the TimeFont setting
+#define NUM_TIME_FONTS 8
+static const uint32_t DIGIT_RES[NUM_TIME_FONTS][2][11] = {
   { DIGIT_SET(ROBOTO), DIGIT_SET(ROBOTON) },
   { DIGIT_SET(TOMORROW), DIGIT_SET(TOMORROWN) },
+  { DIGIT_SET(BARLOWL), DIGIT_SET(BARLOWLN) },
+  { DIGIT_SET(BARLOWR), DIGIT_SET(BARLOWRN) },
+  { DIGIT_SET(BARLOWM), DIGIT_SET(BARLOWMN) },
+  { DIGIT_SET(BARLOWS), DIGIT_SET(BARLOWSN) },
+  { DIGIT_SET(BARLOWB), DIGIT_SET(BARLOWBN) },
+  { DIGIT_SET(BEBAS), DIGIT_SET(BEBASN) },
 };
 
 // ---------------------------------------------------------------------------
@@ -106,7 +113,7 @@ static void recolor_digits(void);
 
 static void load_digits(void) {
   bool narrow = clock_is_24h_style() || s.leading_zero;
-  uint8_t font = s.time_font < 2 ? s.time_font : 0;
+  uint8_t font = s.time_font < NUM_TIME_FONTS ? s.time_font : 0;
   if (s_digits_loaded && narrow == s_narrow && font == s_digit_font) return;
   for (int i = 0; i < 11; i++) {
     if (s_digit[i]) gbitmap_destroy(s_digit[i]);
@@ -475,7 +482,7 @@ static void default_settings(void) {
     .batt_colors = 2,
     .weather_interval = 30,
     .wx_outline = 0,
-    .time_font = 0,
+    .time_font = 5,  // Barlow Condensed SemiBold
     .bar_font = 0,
   };
 }

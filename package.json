@@ -267,6 +267,666 @@
           "file": "digits/tomorrown_colon.png"
         },
         {
+          "type": "bitmap",
+          "name": "BARLOWL_0",
+          "file": "digits/barlowl_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_1",
+          "file": "digits/barlowl_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_2",
+          "file": "digits/barlowl_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_3",
+          "file": "digits/barlowl_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_4",
+          "file": "digits/barlowl_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_5",
+          "file": "digits/barlowl_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_6",
+          "file": "digits/barlowl_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_7",
+          "file": "digits/barlowl_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_8",
+          "file": "digits/barlowl_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_9",
+          "file": "digits/barlowl_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWL_COLON",
+          "file": "digits/barlowl_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_0",
+          "file": "digits/barlowln_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_1",
+          "file": "digits/barlowln_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_2",
+          "file": "digits/barlowln_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_3",
+          "file": "digits/barlowln_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_4",
+          "file": "digits/barlowln_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_5",
+          "file": "digits/barlowln_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_6",
+          "file": "digits/barlowln_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_7",
+          "file": "digits/barlowln_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_8",
+          "file": "digits/barlowln_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_9",
+          "file": "digits/barlowln_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWLN_COLON",
+          "file": "digits/barlowln_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_0",
+          "file": "digits/barlowr_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_1",
+          "file": "digits/barlowr_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_2",
+          "file": "digits/barlowr_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_3",
+          "file": "digits/barlowr_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_4",
+          "file": "digits/barlowr_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_5",
+          "file": "digits/barlowr_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_6",
+          "file": "digits/barlowr_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_7",
+          "file": "digits/barlowr_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_8",
+          "file": "digits/barlowr_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_9",
+          "file": "digits/barlowr_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWR_COLON",
+          "file": "digits/barlowr_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_0",
+          "file": "digits/barlowrn_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_1",
+          "file": "digits/barlowrn_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_2",
+          "file": "digits/barlowrn_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_3",
+          "file": "digits/barlowrn_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_4",
+          "file": "digits/barlowrn_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_5",
+          "file": "digits/barlowrn_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_6",
+          "file": "digits/barlowrn_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_7",
+          "file": "digits/barlowrn_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_8",
+          "file": "digits/barlowrn_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_9",
+          "file": "digits/barlowrn_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWRN_COLON",
+          "file": "digits/barlowrn_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_0",
+          "file": "digits/barlowm_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_1",
+          "file": "digits/barlowm_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_2",
+          "file": "digits/barlowm_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_3",
+          "file": "digits/barlowm_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_4",
+          "file": "digits/barlowm_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_5",
+          "file": "digits/barlowm_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_6",
+          "file": "digits/barlowm_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_7",
+          "file": "digits/barlowm_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_8",
+          "file": "digits/barlowm_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_9",
+          "file": "digits/barlowm_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWM_COLON",
+          "file": "digits/barlowm_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_0",
+          "file": "digits/barlowmn_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_1",
+          "file": "digits/barlowmn_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_2",
+          "file": "digits/barlowmn_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_3",
+          "file": "digits/barlowmn_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_4",
+          "file": "digits/barlowmn_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_5",
+          "file": "digits/barlowmn_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_6",
+          "file": "digits/barlowmn_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_7",
+          "file": "digits/barlowmn_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_8",
+          "file": "digits/barlowmn_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_9",
+          "file": "digits/barlowmn_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWMN_COLON",
+          "file": "digits/barlowmn_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_0",
+          "file": "digits/barlows_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_1",
+          "file": "digits/barlows_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_2",
+          "file": "digits/barlows_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_3",
+          "file": "digits/barlows_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_4",
+          "file": "digits/barlows_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_5",
+          "file": "digits/barlows_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_6",
+          "file": "digits/barlows_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_7",
+          "file": "digits/barlows_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_8",
+          "file": "digits/barlows_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_9",
+          "file": "digits/barlows_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWS_COLON",
+          "file": "digits/barlows_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_0",
+          "file": "digits/barlowsn_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_1",
+          "file": "digits/barlowsn_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_2",
+          "file": "digits/barlowsn_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_3",
+          "file": "digits/barlowsn_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_4",
+          "file": "digits/barlowsn_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_5",
+          "file": "digits/barlowsn_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_6",
+          "file": "digits/barlowsn_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_7",
+          "file": "digits/barlowsn_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_8",
+          "file": "digits/barlowsn_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_9",
+          "file": "digits/barlowsn_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWSN_COLON",
+          "file": "digits/barlowsn_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_0",
+          "file": "digits/barlowb_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_1",
+          "file": "digits/barlowb_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_2",
+          "file": "digits/barlowb_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_3",
+          "file": "digits/barlowb_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_4",
+          "file": "digits/barlowb_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_5",
+          "file": "digits/barlowb_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_6",
+          "file": "digits/barlowb_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_7",
+          "file": "digits/barlowb_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_8",
+          "file": "digits/barlowb_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_9",
+          "file": "digits/barlowb_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWB_COLON",
+          "file": "digits/barlowb_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_0",
+          "file": "digits/barlowbn_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_1",
+          "file": "digits/barlowbn_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_2",
+          "file": "digits/barlowbn_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_3",
+          "file": "digits/barlowbn_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_4",
+          "file": "digits/barlowbn_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_5",
+          "file": "digits/barlowbn_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_6",
+          "file": "digits/barlowbn_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_7",
+          "file": "digits/barlowbn_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_8",
+          "file": "digits/barlowbn_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_9",
+          "file": "digits/barlowbn_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BARLOWBN_COLON",
+          "file": "digits/barlowbn_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_0",
+          "file": "digits/bebas_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_1",
+          "file": "digits/bebas_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_2",
+          "file": "digits/bebas_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_3",
+          "file": "digits/bebas_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_4",
+          "file": "digits/bebas_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_5",
+          "file": "digits/bebas_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_6",
+          "file": "digits/bebas_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_7",
+          "file": "digits/bebas_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_8",
+          "file": "digits/bebas_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_9",
+          "file": "digits/bebas_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBAS_COLON",
+          "file": "digits/bebas_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_0",
+          "file": "digits/bebasn_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_1",
+          "file": "digits/bebasn_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_2",
+          "file": "digits/bebasn_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_3",
+          "file": "digits/bebasn_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_4",
+          "file": "digits/bebasn_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_5",
+          "file": "digits/bebasn_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_6",
+          "file": "digits/bebasn_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_7",
+          "file": "digits/bebasn_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_8",
+          "file": "digits/bebasn_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_9",
+          "file": "digits/bebasn_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "BEBASN_COLON",
+          "file": "digits/bebasn_colon.png"
+        },
+        {
           "type": "font",
           "name": "FONT_TOMORROW_18",
           "file": "fonts/Tomorrow-SemiBold.ttf",
