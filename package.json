@@ -1,0 +1,174 @@
+{
+  "name": "large-time",
+  "author": "lucab",
+  "version": "1.0.0",
+  "keywords": [
+    "pebble-app"
+  ],
+  "private": true,
+  "pebble": {
+    "displayName": "LargeTime",
+    "uuid": "7953cb27-ed80-4968-bbcd-a72cfec6d8b4",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "basalt"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "capabilities": [
+      "location",
+      "configurable"
+    ],
+    "messageKeys": [
+      "BgColor",
+      "TimeColor",
+      "BarColor",
+      "AccentColor",
+      "TextColor",
+      "IconColor",
+      "BoxTextColor",
+      "ShowLines",
+      "LeadingZero",
+      "TempUnit",
+      "BattColors",
+      "WeatherColors",
+      "WeatherInterval",
+      "WeatherLocation",
+      "BtVibe",
+      "WeatherTemp",
+      "WeatherIcon",
+      "RequestWeather"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "DIGIT_0",
+          "file": "digits/digit_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_1",
+          "file": "digits/digit_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_2",
+          "file": "digits/digit_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_3",
+          "file": "digits/digit_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_4",
+          "file": "digits/digit_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_5",
+          "file": "digits/digit_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_6",
+          "file": "digits/digit_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_7",
+          "file": "digits/digit_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_8",
+          "file": "digits/digit_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_9",
+          "file": "digits/digit_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGIT_COLON",
+          "file": "digits/colon.png"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_BATTERY_BG",
+          "file": "icons/BATTERY_BG.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_BATTERY_CHARGE",
+          "file": "icons/BATTERY_CHARGE.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_CLEAR_DAY",
+          "file": "icons/CLEAR_DAY.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_CLEAR_NIGHT",
+          "file": "icons/CLEAR_NIGHT.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_CLOUDY_DAY",
+          "file": "icons/CLOUDY_DAY.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_HEAVY_RAIN",
+          "file": "icons/HEAVY_RAIN.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_HEAVY_SNOW",
+          "file": "icons/HEAVY_SNOW.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_LIGHT_RAIN",
+          "file": "icons/LIGHT_RAIN.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_LIGHT_SNOW",
+          "file": "icons/LIGHT_SNOW.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_PARTLY_CLOUDY",
+          "file": "icons/PARTLY_CLOUDY.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_PARTLY_CLOUDY_NIGHT",
+          "file": "icons/PARTLY_CLOUDY_NIGHT.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_RAINING_AND_SNOWING",
+          "file": "icons/RAINING_AND_SNOWING.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_THUNDERSTORM",
+          "file": "icons/THUNDERSTORM.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "PDC_WEATHER_GENERIC",
+          "file": "icons/WEATHER_GENERIC.pdc"
+        }
+      ]
+    }
+  }
+}
