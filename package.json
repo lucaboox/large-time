@@ -36,6 +36,7 @@
       "TempUnit",
       "BattDisplay",
       "BattColors",
+      "WeatherOrder",
       "WeatherColors",
       "WeatherOutline",
       "WeatherInterval",

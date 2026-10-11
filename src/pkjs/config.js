@@ -57,6 +57,13 @@ module.exports = [
         options: [{ label: 'Celsius', value: '0' }, { label: 'Fahrenheit', value: '1' }]
       },
       {
+        type: 'select', messageKey: 'WeatherOrder', label: 'Layout', defaultValue: '0',
+        options: [
+          { label: 'Temperature, then icon', value: '0' },
+          { label: 'Icon, then temperature', value: '1' }
+        ]
+      },
+      {
         type: 'toggle', messageKey: 'WeatherColors', label: 'Colored weather icons',
         description: 'Yellow sun, grey moon, white clouds, blue raindrops, yellow lightning.', defaultValue: true
       },

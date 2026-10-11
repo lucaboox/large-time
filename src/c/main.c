@@ -11,7 +11,7 @@
 
 #define KEY_SETTINGS 1
 #define KEY_WEATHER  2
-#define SETTINGS_VERSION 4
+#define SETTINGS_VERSION 5
 #define DEG "\xc2\xb0"
 
 // Layout (144x168)
@@ -40,6 +40,7 @@ typedef struct {
   uint8_t time_font;         // index into DIGIT_RES (see the TimeFont setting)
   uint8_t bar_font;          // 0 = Gothic (system), 1 = Tomorrow
   uint8_t batt_display;      // 0 = icon + percent, 1 = percent only, 2 = icon only
+  uint8_t wx_order;          // 0 = temperature then icon, 1 = icon then temperature
 } Settings;
 
 typedef struct {
@@ -389,8 +390,13 @@ static void canvas_update(Layer *layer, GContext *ctx) {
   int iy = bar_top + (bar_h - ICON) / 2;
 
   graphics_context_set_text_color(ctx, s.text);
-  text_left(ctx, s_temp, EDGE, bcap);
-  draw_weather_icon(ctx, EDGE + text_width(s_temp) + 2, iy);
+  if (s.wx_order == 1) {
+    draw_weather_icon(ctx, EDGE, iy);
+    text_left(ctx, s_temp, EDGE + ICON + 3, bcap);
+  } else {
+    text_left(ctx, s_temp, EDGE, bcap);
+    draw_weather_icon(ctx, EDGE + text_width(s_temp) + 2, iy);
+  }
 
   // Battery icon is 26px wide with the nub
   if (s.batt_display == 2) {
@@ -494,6 +500,7 @@ static void default_settings(void) {
     .time_font = 5,  // Barlow Condensed SemiBold
     .bar_font = 0,
     .batt_display = 0,
+    .wx_order = 0,
   };
 }
 
@@ -538,6 +545,7 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
   READ_U8(TimeFont, time_font)
   READ_U8(BarFont, bar_font)
   READ_U8(BattDisplay, batt_display)
+  READ_U8(WeatherOrder, wx_order)
 
   if ((t = dict_find(iter, MESSAGE_KEY_WeatherTemp))) {
     s_wx.temp10 = tuple_int(t);
