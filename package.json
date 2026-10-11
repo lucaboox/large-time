@@ -96,7 +96,62 @@
         {
           "type": "bitmap",
           "name": "DIGIT_COLON",
-          "file": "digits/colon.png"
+          "file": "digits/digit_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_0",
+          "file": "digits/digitn_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_1",
+          "file": "digits/digitn_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_2",
+          "file": "digits/digitn_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_3",
+          "file": "digits/digitn_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_4",
+          "file": "digits/digitn_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_5",
+          "file": "digits/digitn_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_6",
+          "file": "digits/digitn_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_7",
+          "file": "digits/digitn_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_8",
+          "file": "digits/digitn_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_9",
+          "file": "digits/digitn_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "DIGITN_COLON",
+          "file": "digits/digitn_colon.png"
         },
         {
           "type": "raw",

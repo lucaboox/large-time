@@ -40,7 +40,7 @@ module.exports = [
       },
       {
         type: 'toggle', messageKey: 'WeatherColors', label: 'Colored weather icons',
-        description: 'Yellow sun, grey moon and clouds, blue rain, white snow (on a black bar).', defaultValue: true
+        description: 'Yellow sun, grey moon, white clouds, blue raindrops, yellow lightning.', defaultValue: true
       },
       {
         type: 'select', messageKey: 'WeatherInterval', label: 'Update every', defaultValue: '30',

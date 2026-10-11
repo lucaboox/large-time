@@ -13,8 +13,10 @@ import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
-DIGIT_H = 74     # ink height of the digits in pixels
-SQUEEZE = 0.62   # horizontal scale, so "12:59" fits the 144px screen
+DIGIT_H = 66     # ink height of the digits in pixels
+# Horizontal scale per digit set: 12-hour times never start with a wide digit,
+# 24-hour times like "23:48" need a narrower set to fit the 144px screen.
+SETS = [('digit', 0.71), ('digitn', 0.65)]
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'resources', 'digits')
 
 
@@ -27,7 +29,7 @@ def font_for_height(path):
     return ImageFont.truetype(path, size)
 
 
-def render(f, ch):
+def render(f, ch, squeeze):
     ref = f.getbbox('0')
     bb = f.getbbox(ch)
     im = Image.new('L', (bb[2] - bb[0] + 8, DIGIT_H + 8), 0)
@@ -35,7 +37,7 @@ def render(f, ch):
     im = im.crop((0, 4, im.width, 4 + DIGIT_H))  # keep the shared baseline/height
     ink = im.getbbox()
     im = im.crop((ink[0], 0, ink[2], DIGIT_H))
-    w = max(1, int(round(im.width * SQUEEZE)))
+    w = max(1, int(round(im.width * squeeze)))
     return im.resize((w, DIGIT_H), Image.LANCZOS)
 
 
@@ -56,10 +58,11 @@ def main():
         sys.exit(__doc__)
     f = font_for_height(sys.argv[1])
     os.makedirs(OUT, exist_ok=True)
-    for ch, name in [(str(d), 'digit_%d.png' % d) for d in range(10)] + [(':', 'colon.png')]:
-        im = render(f, ch)
-        save_2bit(im, os.path.join(OUT, name))
-        print(name, im.size)
+    for prefix, squeeze in SETS:
+        for ch, name in [(str(d), '%s_%d.png' % (prefix, d)) for d in range(10)] + [(':', '%s_colon.png' % prefix)]:
+            im = render(f, ch, squeeze)
+            save_2bit(im, os.path.join(OUT, name))
+            print(name, im.size)
 
 
 if __name__ == '__main__':

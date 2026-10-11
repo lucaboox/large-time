@@ -18,8 +18,7 @@
 #define TOP_H 28        // top bar height
 #define BOT_Y 140       // bottom bar starts here
 #define LINE_W 2        // divider line thickness
-#define DIGIT_H 74
-#define DIGIT_GAP 3
+#define DIGIT_GAP 3     // preferred space between digits (tightens for wide times)
 #define ICON 25         // native size of the line-art icons
 #define EDGE 4          // side margin in the bars
 
@@ -52,6 +51,8 @@ static Weather s_wx;
 static GFont s_font;
 
 static GBitmap *s_digit[11];  // 0-9, 10 = colon
+static bool s_narrow;          // which digit set is loaded
+static bool s_digits_loaded;
 static GDrawCommandImage *s_wx_img, *s_batt_img, *s_charge_img;
 static uint8_t s_wx_img_icon = 0xFF;
 
@@ -63,10 +64,15 @@ static BatteryChargeState s_batt;
 static bool s_bt = true;
 static time_t s_last_wx_req;
 
-static const uint32_t DIGIT_RES[11] = {
-  RESOURCE_ID_DIGIT_0, RESOURCE_ID_DIGIT_1, RESOURCE_ID_DIGIT_2, RESOURCE_ID_DIGIT_3,
-  RESOURCE_ID_DIGIT_4, RESOURCE_ID_DIGIT_5, RESOURCE_ID_DIGIT_6, RESOURCE_ID_DIGIT_7,
-  RESOURCE_ID_DIGIT_8, RESOURCE_ID_DIGIT_9, RESOURCE_ID_DIGIT_COLON
+// Normal digits fit any 12-hour time; 24-hour or leading-zero times
+// ("23:48", "09:44") start with a wide digit and use the narrower set.
+static const uint32_t DIGIT_RES[2][11] = {
+  { RESOURCE_ID_DIGIT_0, RESOURCE_ID_DIGIT_1, RESOURCE_ID_DIGIT_2, RESOURCE_ID_DIGIT_3,
+    RESOURCE_ID_DIGIT_4, RESOURCE_ID_DIGIT_5, RESOURCE_ID_DIGIT_6, RESOURCE_ID_DIGIT_7,
+    RESOURCE_ID_DIGIT_8, RESOURCE_ID_DIGIT_9, RESOURCE_ID_DIGIT_COLON },
+  { RESOURCE_ID_DIGITN_0, RESOURCE_ID_DIGITN_1, RESOURCE_ID_DIGITN_2, RESOURCE_ID_DIGITN_3,
+    RESOURCE_ID_DIGITN_4, RESOURCE_ID_DIGITN_5, RESOURCE_ID_DIGITN_6, RESOURCE_ID_DIGITN_7,
+    RESOURCE_ID_DIGITN_8, RESOURCE_ID_DIGITN_9, RESOURCE_ID_DIGITN_COLON },
 };
 
 // ---------------------------------------------------------------------------
@@ -89,6 +95,20 @@ static int32_t tuple_int(Tuple *t) {
 }
 
 // Digit images carry alpha levels only; swap their color, keep the alpha
+static void recolor_digits(void);
+
+static void load_digits(void) {
+  bool narrow = clock_is_24h_style() || s.leading_zero;
+  if (s_digits_loaded && narrow == s_narrow) return;
+  for (int i = 0; i < 11; i++) {
+    if (s_digit[i]) gbitmap_destroy(s_digit[i]);
+    s_digit[i] = gbitmap_create_with_resource(DIGIT_RES[narrow][i]);
+  }
+  s_narrow = narrow;
+  s_digits_loaded = true;
+  recolor_digits();
+}
+
 static void recolor_digits(void) {
   for (int i = 0; i < 11; i++) {
     if (!s_digit[i]) continue;
@@ -157,19 +177,63 @@ static bool dark_bar(void) { return gcolor_equal(s.bar, GColorBlack); }
 static GColor icon_fill(void) { return dark_bar() ? GColorBlack : GColorWhite; }
 static GColor icon_stroke(GColor c) { return dark_bar() ? c : GColorBlack; }
 
-static GColor wx_color(void) {
-  if (!s.wx_colors) return s.icon;
-  switch (s_wx.ts ? s_wx.icon : I_UNKNOWN) {
-    case I_CLEAR_DAY:
-    case I_THUNDER: return GColorYellow;
-    case I_PARTLY_DAY: return GColorIcterine;
+// Colored weather icons: every shape inside the icon gets its own color.
+// One letter per draw command, in file order:
+//   S sun (yellow fill)   R sun ray (yellow line)   M moon (grey fill)
+//   C cloud (white fill)  B back cloud (light grey) K storm cloud (grey)
+//   L lightning (yellow)  D raindrop (blue line)    F snowflake line
+//   x detail line inside a shape (dark)
+static const char *wx_parts(uint8_t icon) {
+  switch (icon) {
+    case I_CLEAR_DAY: return "SRRRRRRRR";
+    case I_CLEAR_NIGHT: return "M";
+    case I_PARTLY_DAY: return "SRRCxRR";
+    case I_PARTLY_NIGHT: return "MCx";
+    case I_CLOUDY:
+    case I_FOG: return "CBxx";
     case I_RAIN:
-    case I_HEAVY_RAIN: return GColorVividCerulean;
-    case I_SNOW:
-    case I_HEAVY_SNOW: return GColorWhite;
-    case I_SLEET: return GColorCeleste;
-    default: return GColorLightGray;
+    case I_HEAVY_RAIN: return "CxDDDD";
+    case I_SNOW: return "CxFFFF";
+    case I_HEAVY_SNOW: return "CxFFFFFF";
+    case I_SLEET: return "CxDDFF";
+    case I_THUNDER: return "KLx";
+    default: return "SRRCxDDD";
   }
+}
+
+typedef struct { const char *parts; uint8_t len; } WxPaint;
+
+static bool wx_color_cb(GDrawCommand *cmd, uint32_t index, void *context) {
+  WxPaint *wp = context;
+  char part = index < wp->len ? wp->parts[index] : 'x';
+  GColor fill = GColorClear, stroke = GColorBlack;
+  switch (part) {
+    case 'S': fill = GColorYellow; break;
+    case 'R': stroke = GColorYellow; break;
+    case 'M': fill = GColorLightGray; break;
+    case 'C': fill = GColorWhite; break;
+    case 'B': fill = GColorLightGray; break;
+    case 'K': fill = GColorLightGray; break;
+    case 'L': fill = GColorYellow; break;
+    case 'D': stroke = GColorVividCerulean; break;
+    case 'F': stroke = dark_bar() ? GColorWhite : GColorVividCerulean; break;
+    default: break;
+  }
+  gdraw_command_set_fill_color(cmd, fill);
+  gdraw_command_set_stroke_color(cmd, stroke);
+  return true;
+}
+
+static void draw_weather_icon(GContext *ctx, int x, int y) {
+  if (!s_wx_img) return;
+  if (!s.wx_colors) {
+    draw_pdc(ctx, s_wx_img, x, y, icon_fill(), icon_stroke(s.icon));
+    return;
+  }
+  WxPaint wp = { wx_parts(s_wx_img_icon), 0 };
+  wp.len = strlen(wp.parts);
+  gdraw_command_list_iterate(gdraw_command_image_get_command_list(s_wx_img), wx_color_cb, &wp);
+  gdraw_command_image_draw(ctx, s_wx_img, GPoint(x, y));
 }
 
 static GColor batt_level_color(void) {
@@ -232,14 +296,17 @@ static void draw_time(GContext *ctx, GRect b) {
     w += gbitmap_get_bounds(bmp).size.w;
   }
   if (!n) return;
-  w += DIGIT_GAP * (n - 1);
+  int gap = DIGIT_GAP;
+  while (gap > 1 && w + gap * (n - 1) > b.size.w - 4) gap--;
+  w += gap * (n - 1);
+  int digit_h = gbitmap_get_bounds(g[0]).size.h;
   int x = (b.size.w - w) / 2;
-  int y = TOP_H + LINE_W + (BOT_Y - TOP_H - LINE_W - DIGIT_H) / 2;
+  int y = TOP_H + LINE_W + (BOT_Y - TOP_H - LINE_W - digit_h) / 2;
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
   for (int i = 0; i < n; i++) {
     GSize sz = gbitmap_get_bounds(g[i]).size;
     graphics_draw_bitmap_in_rect(ctx, g[i], GRect(x, y, sz.w, sz.h));
-    x += sz.w + DIGIT_GAP;
+    x += sz.w + gap;
   }
   graphics_context_set_compositing_mode(ctx, GCompOpAssign);
 }
@@ -268,7 +335,7 @@ static void canvas_update(Layer *layer, GContext *ctx) {
   text_center(ctx, s_month, w * 5 / 6, cap);
   int bw = text_width(s_daynum) + 12;
   graphics_context_set_fill_color(ctx, s.accent);
-  graphics_fill_rect(ctx, GRect(w / 2 - bw / 2, 3, bw, TOP_H - 6), 2, GCornersAll);
+  graphics_fill_rect(ctx, GRect(w / 2 - bw / 2, 0, bw, TOP_H), 0, GCornerNone);
   graphics_context_set_text_color(ctx, s.box_text);
   text_center(ctx, s_daynum, w / 2, cap);
 
@@ -283,7 +350,7 @@ static void canvas_update(Layer *layer, GContext *ctx) {
 
   graphics_context_set_text_color(ctx, s.text);
   text_left(ctx, s_temp, EDGE, bcap);
-  draw_pdc(ctx, s_wx_img, EDGE + text_width(s_temp) + 2, iy, icon_fill(), icon_stroke(wx_color()));
+  draw_weather_icon(ctx, EDGE + text_width(s_temp) + 2, iy);
 
   int pw = text_width(s_pct);
   text_left(ctx, s_pct, w - EDGE - pw, bcap);
@@ -338,6 +405,7 @@ static void maybe_request_weather(void) {
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   s_tm = *tick_time;
+  load_digits();  // no-op unless 12/24-hour changed
   update_time();
   if (units_changed & DAY_UNIT) update_date();
   maybe_request_weather();
@@ -382,6 +450,7 @@ static void default_settings(void) {
 
 static void apply_settings(void) {
   window_set_background_color(s_window, s.bg);
+  load_digits();
   recolor_digits();
   update_time();
   update_date();
@@ -454,7 +523,6 @@ static void init(void) {
   if (persist_read_data(KEY_WEATHER, &s_wx, sizeof(s_wx)) != (int)sizeof(s_wx)) memset(&s_wx, 0, sizeof(s_wx));
 
   s_font = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD);
-  for (int i = 0; i < 11; i++) s_digit[i] = gbitmap_create_with_resource(DIGIT_RES[i]);
   s_batt_img = gdraw_command_image_create_with_resource(RESOURCE_ID_PDC_BATTERY_BG);
   s_charge_img = gdraw_command_image_create_with_resource(RESOURCE_ID_PDC_BATTERY_CHARGE);
 
@@ -482,7 +550,7 @@ static void deinit(void) {
   battery_state_service_unsubscribe();
   connection_service_unsubscribe();
   window_destroy(s_window);
-  for (int i = 0; i < 11; i++) gbitmap_destroy(s_digit[i]);
+  for (int i = 0; i < 11; i++) if (s_digit[i]) gbitmap_destroy(s_digit[i]);
   if (s_wx_img) gdraw_command_image_destroy(s_wx_img);
   gdraw_command_image_destroy(s_batt_img);
   gdraw_command_image_destroy(s_charge_img);
