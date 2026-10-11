@@ -90,6 +90,14 @@ module.exports = [
     items: [
       { type: 'heading', defaultValue: 'Battery' },
       {
+        type: 'select', messageKey: 'BattDisplay', label: 'Show', defaultValue: '0',
+        options: [
+          { label: 'Battery icon and percent', value: '0' },
+          { label: 'Percent only', value: '1' },
+          { label: 'Battery icon only', value: '2' }
+        ]
+      },
+      {
         type: 'select', messageKey: 'BattColors', label: 'Battery icon color', defaultValue: '2',
         options: [
           { label: 'Same as icon color', value: '0' },

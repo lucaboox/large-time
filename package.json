@@ -34,6 +34,7 @@
       "BarFont",
       "LeadingZero",
       "TempUnit",
+      "BattDisplay",
       "BattColors",
       "WeatherColors",
       "WeatherOutline",

@@ -11,7 +11,7 @@
 
 #define KEY_SETTINGS 1
 #define KEY_WEATHER  2
-#define SETTINGS_VERSION 3
+#define SETTINGS_VERSION 4
 #define DEG "\xc2\xb0"
 
 // Layout (144x168)
@@ -39,6 +39,7 @@ typedef struct {
   uint8_t wx_outline;        // colored weather outlines on a dark bar: 0 = match each shape, 1 = icon color
   uint8_t time_font;         // index into DIGIT_RES (see the TimeFont setting)
   uint8_t bar_font;          // 0 = Gothic (system), 1 = Tomorrow
+  uint8_t batt_display;      // 0 = icon + percent, 1 = percent only, 2 = icon only
 } Settings;
 
 typedef struct {
@@ -273,6 +274,9 @@ static void draw_battery(GContext *ctx, int x, int y) {
     outline = level;
   }
   draw_pdc(ctx, s_batt_img, x, y, fill, outline);
+  // TimeStyle's nub is a 2x3px stub; draw a bigger one so it reads as a battery
+  graphics_context_set_fill_color(ctx, outline);
+  graphics_fill_rect(ctx, GRect(x + 23, y + 8, 3, 7), 0, GCornerNone);
   if (s_batt.is_charging || s_batt.is_plugged) {
     draw_pdc(ctx, s_charge_img, x, y, outline, fill);  // bolt uses inverted colors
     return;
@@ -388,9 +392,14 @@ static void canvas_update(Layer *layer, GContext *ctx) {
   text_left(ctx, s_temp, EDGE, bcap);
   draw_weather_icon(ctx, EDGE + text_width(s_temp) + 2, iy);
 
-  int pw = text_width(s_pct);
-  text_left(ctx, s_pct, w - EDGE - pw, bcap);
-  draw_battery(ctx, w - EDGE - pw - 2 - ICON, iy);
+  // Battery icon is 26px wide with the nub
+  if (s.batt_display == 2) {
+    draw_battery(ctx, w - EDGE - (ICON + 1), iy);
+  } else {
+    int pw = text_width(s_pct);
+    text_left(ctx, s_pct, w - EDGE - pw, bcap);
+    if (s.batt_display == 0) draw_battery(ctx, w - EDGE - pw - 4 - (ICON + 1), iy);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -484,6 +493,7 @@ static void default_settings(void) {
     .wx_outline = 0,
     .time_font = 5,  // Barlow Condensed SemiBold
     .bar_font = 0,
+    .batt_display = 0,
   };
 }
 
@@ -527,6 +537,7 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
   READ_U8(WeatherOutline, wx_outline)
   READ_U8(TimeFont, time_font)
   READ_U8(BarFont, bar_font)
+  READ_U8(BattDisplay, batt_display)
 
   if ((t = dict_find(iter, MESSAGE_KEY_WeatherTemp))) {
     s_wx.temp10 = tuple_int(t);
