@@ -43,6 +43,14 @@ module.exports = [
         description: 'Yellow sun, grey moon, white clouds, blue raindrops, yellow lightning.', defaultValue: true
       },
       {
+        type: 'select', messageKey: 'WeatherOutline', label: 'Colored icon outlines (black bar)', defaultValue: '0',
+        description: 'On a black bar, outline each shape in its own color (full-size shapes) or in the Icons color.',
+        options: [
+          { label: 'Same color as each shape', value: '0' },
+          { label: 'Icons color', value: '1' }
+        ]
+      },
+      {
         type: 'select', messageKey: 'WeatherInterval', label: 'Update every', defaultValue: '30',
         options: [
           { label: '15 minutes', value: '15' },

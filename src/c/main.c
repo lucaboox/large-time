@@ -11,7 +11,7 @@
 
 #define KEY_SETTINGS 1
 #define KEY_WEATHER  2
-#define SETTINGS_VERSION 1
+#define SETTINGS_VERSION 2
 #define DEG "\xc2\xb0"
 
 // Layout (144x168)
@@ -36,6 +36,7 @@ typedef struct {
   bool show_lines, leading_zero, temp_f, wx_colors, bt_vibe;
   uint8_t batt_colors;       // 0 = icon color, 1 = red when low, 2 = green/yellow/red by level
   uint8_t weather_interval;  // minutes
+  uint8_t wx_outline;        // colored weather outlines on a dark bar: 0 = match each shape, 1 = icon color
 } Settings;
 
 typedef struct {
@@ -219,6 +220,9 @@ static bool wx_color_cb(GDrawCommand *cmd, uint32_t index, void *context) {
     case 'F': stroke = dark_bar() ? GColorWhite : GColorVividCerulean; break;
     default: break;
   }
+  // A black outline vanishes on a dark bar and eats into the shape, so
+  // filled shapes get a visible outline there (their own color by default)
+  if (dark_bar() && fill.argb != GColorClear.argb) stroke = s.wx_outline ? s.icon : fill;
   gdraw_command_set_fill_color(cmd, fill);
   gdraw_command_set_stroke_color(cmd, stroke);
   return true;
@@ -445,6 +449,7 @@ static void default_settings(void) {
     .bt_vibe = true,
     .batt_colors = 2,
     .weather_interval = 30,
+    .wx_outline = 0,
   };
 }
 
@@ -484,6 +489,7 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
   READ_BOOL(BtVibe, bt_vibe)
   READ_U8(BattColors, batt_colors)
   READ_U8(WeatherInterval, weather_interval)
+  READ_U8(WeatherOutline, wx_outline)
 
   if ((t = dict_find(iter, MESSAGE_KEY_WeatherTemp))) {
     s_wx.temp10 = tuple_int(t);
