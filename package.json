@@ -30,6 +30,8 @@
       "IconColor",
       "BoxTextColor",
       "ShowLines",
+      "TimeFont",
+      "BarFont",
       "LeadingZero",
       "TempUnit",
       "BattColors",
@@ -46,113 +48,229 @@
       "media": [
         {
           "type": "bitmap",
-          "name": "DIGIT_0",
-          "file": "digits/digit_0.png"
+          "name": "ROBOTO_0",
+          "file": "digits/roboto_0.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_1",
-          "file": "digits/digit_1.png"
+          "name": "ROBOTO_1",
+          "file": "digits/roboto_1.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_2",
-          "file": "digits/digit_2.png"
+          "name": "ROBOTO_2",
+          "file": "digits/roboto_2.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_3",
-          "file": "digits/digit_3.png"
+          "name": "ROBOTO_3",
+          "file": "digits/roboto_3.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_4",
-          "file": "digits/digit_4.png"
+          "name": "ROBOTO_4",
+          "file": "digits/roboto_4.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_5",
-          "file": "digits/digit_5.png"
+          "name": "ROBOTO_5",
+          "file": "digits/roboto_5.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_6",
-          "file": "digits/digit_6.png"
+          "name": "ROBOTO_6",
+          "file": "digits/roboto_6.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_7",
-          "file": "digits/digit_7.png"
+          "name": "ROBOTO_7",
+          "file": "digits/roboto_7.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_8",
-          "file": "digits/digit_8.png"
+          "name": "ROBOTO_8",
+          "file": "digits/roboto_8.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_9",
-          "file": "digits/digit_9.png"
+          "name": "ROBOTO_9",
+          "file": "digits/roboto_9.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGIT_COLON",
-          "file": "digits/digit_colon.png"
+          "name": "ROBOTO_COLON",
+          "file": "digits/roboto_colon.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_0",
-          "file": "digits/digitn_0.png"
+          "name": "ROBOTON_0",
+          "file": "digits/roboton_0.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_1",
-          "file": "digits/digitn_1.png"
+          "name": "ROBOTON_1",
+          "file": "digits/roboton_1.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_2",
-          "file": "digits/digitn_2.png"
+          "name": "ROBOTON_2",
+          "file": "digits/roboton_2.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_3",
-          "file": "digits/digitn_3.png"
+          "name": "ROBOTON_3",
+          "file": "digits/roboton_3.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_4",
-          "file": "digits/digitn_4.png"
+          "name": "ROBOTON_4",
+          "file": "digits/roboton_4.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_5",
-          "file": "digits/digitn_5.png"
+          "name": "ROBOTON_5",
+          "file": "digits/roboton_5.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_6",
-          "file": "digits/digitn_6.png"
+          "name": "ROBOTON_6",
+          "file": "digits/roboton_6.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_7",
-          "file": "digits/digitn_7.png"
+          "name": "ROBOTON_7",
+          "file": "digits/roboton_7.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_8",
-          "file": "digits/digitn_8.png"
+          "name": "ROBOTON_8",
+          "file": "digits/roboton_8.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_9",
-          "file": "digits/digitn_9.png"
+          "name": "ROBOTON_9",
+          "file": "digits/roboton_9.png"
         },
         {
           "type": "bitmap",
-          "name": "DIGITN_COLON",
-          "file": "digits/digitn_colon.png"
+          "name": "ROBOTON_COLON",
+          "file": "digits/roboton_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_0",
+          "file": "digits/tomorrow_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_1",
+          "file": "digits/tomorrow_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_2",
+          "file": "digits/tomorrow_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_3",
+          "file": "digits/tomorrow_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_4",
+          "file": "digits/tomorrow_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_5",
+          "file": "digits/tomorrow_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_6",
+          "file": "digits/tomorrow_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_7",
+          "file": "digits/tomorrow_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_8",
+          "file": "digits/tomorrow_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_9",
+          "file": "digits/tomorrow_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROW_COLON",
+          "file": "digits/tomorrow_colon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_0",
+          "file": "digits/tomorrown_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_1",
+          "file": "digits/tomorrown_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_2",
+          "file": "digits/tomorrown_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_3",
+          "file": "digits/tomorrown_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_4",
+          "file": "digits/tomorrown_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_5",
+          "file": "digits/tomorrown_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_6",
+          "file": "digits/tomorrown_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_7",
+          "file": "digits/tomorrown_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_8",
+          "file": "digits/tomorrown_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_9",
+          "file": "digits/tomorrown_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "TOMORROWN_COLON",
+          "file": "digits/tomorrown_colon.png"
+        },
+        {
+          "type": "font",
+          "name": "FONT_TOMORROW_18",
+          "file": "fonts/Tomorrow-SemiBold.ttf",
+          "characterRegex": "[ -~\u00b0]"
         },
         {
           "type": "raw",

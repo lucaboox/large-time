@@ -11,13 +11,13 @@
 
 #define KEY_SETTINGS 1
 #define KEY_WEATHER  2
-#define SETTINGS_VERSION 2
+#define SETTINGS_VERSION 3
 #define DEG "\xc2\xb0"
 
 // Layout (144x168)
 #define TOP_H 28        // top bar height
-#define BOT_Y 140       // bottom bar starts here
-#define LINE_W 2        // divider line thickness
+#define BOT_Y 138       // bottom bar starts here (line + 26px for the 25px icons)
+#define LINE_W 4        // divider line thickness
 #define DIGIT_GAP 3     // preferred space between digits (tightens for wide times)
 #define ICON 25         // native size of the line-art icons
 #define EDGE 4          // side margin in the bars
@@ -37,6 +37,8 @@ typedef struct {
   uint8_t batt_colors;       // 0 = icon color, 1 = red when low, 2 = green/yellow/red by level
   uint8_t weather_interval;  // minutes
   uint8_t wx_outline;        // colored weather outlines on a dark bar: 0 = match each shape, 1 = icon color
+  uint8_t time_font;         // 0 = Roboto, 1 = Tomorrow
+  uint8_t bar_font;          // 0 = Gothic (system), 1 = Tomorrow
 } Settings;
 
 typedef struct {
@@ -50,9 +52,12 @@ static Layer *s_canvas;
 static Settings s;
 static Weather s_wx;
 static GFont s_font;
+static GFont s_tomorrow;       // custom bar font, loaded only when selected
+static int s_font_off, s_font_cap;
 
 static GBitmap *s_digit[11];  // 0-9, 10 = colon
 static bool s_narrow;          // which digit set is loaded
+static uint8_t s_digit_font;
 static bool s_digits_loaded;
 static GDrawCommandImage *s_wx_img, *s_batt_img, *s_charge_img;
 static uint8_t s_wx_img_icon = 0xFF;
@@ -67,13 +72,14 @@ static time_t s_last_wx_req;
 
 // Normal digits fit any 12-hour time; 24-hour or leading-zero times
 // ("23:48", "09:44") start with a wide digit and use the narrower set.
-static const uint32_t DIGIT_RES[2][11] = {
-  { RESOURCE_ID_DIGIT_0, RESOURCE_ID_DIGIT_1, RESOURCE_ID_DIGIT_2, RESOURCE_ID_DIGIT_3,
-    RESOURCE_ID_DIGIT_4, RESOURCE_ID_DIGIT_5, RESOURCE_ID_DIGIT_6, RESOURCE_ID_DIGIT_7,
-    RESOURCE_ID_DIGIT_8, RESOURCE_ID_DIGIT_9, RESOURCE_ID_DIGIT_COLON },
-  { RESOURCE_ID_DIGITN_0, RESOURCE_ID_DIGITN_1, RESOURCE_ID_DIGITN_2, RESOURCE_ID_DIGITN_3,
-    RESOURCE_ID_DIGITN_4, RESOURCE_ID_DIGITN_5, RESOURCE_ID_DIGITN_6, RESOURCE_ID_DIGITN_7,
-    RESOURCE_ID_DIGITN_8, RESOURCE_ID_DIGITN_9, RESOURCE_ID_DIGITN_COLON },
+#define DIGIT_SET(P) { RESOURCE_ID_##P##_0, RESOURCE_ID_##P##_1, RESOURCE_ID_##P##_2, \
+  RESOURCE_ID_##P##_3, RESOURCE_ID_##P##_4, RESOURCE_ID_##P##_5, RESOURCE_ID_##P##_6, \
+  RESOURCE_ID_##P##_7, RESOURCE_ID_##P##_8, RESOURCE_ID_##P##_9, RESOURCE_ID_##P##_COLON }
+
+// [font][narrow][glyph]
+static const uint32_t DIGIT_RES[2][2][11] = {
+  { DIGIT_SET(ROBOTO), DIGIT_SET(ROBOTON) },
+  { DIGIT_SET(TOMORROW), DIGIT_SET(TOMORROWN) },
 };
 
 // ---------------------------------------------------------------------------
@@ -100,12 +106,14 @@ static void recolor_digits(void);
 
 static void load_digits(void) {
   bool narrow = clock_is_24h_style() || s.leading_zero;
-  if (s_digits_loaded && narrow == s_narrow) return;
+  uint8_t font = s.time_font < 2 ? s.time_font : 0;
+  if (s_digits_loaded && narrow == s_narrow && font == s_digit_font) return;
   for (int i = 0; i < 11; i++) {
     if (s_digit[i]) gbitmap_destroy(s_digit[i]);
-    s_digit[i] = gbitmap_create_with_resource(DIGIT_RES[narrow][i]);
+    s_digit[i] = gbitmap_create_with_resource(DIGIT_RES[font][narrow][i]);
   }
   s_narrow = narrow;
+  s_digit_font = font;
   s_digits_loaded = true;
   recolor_digits();
 }
@@ -276,9 +284,26 @@ static int text_width(const char *str) {
                                                GTextOverflowModeFill, GTextAlignmentLeft).w;
 }
 
-// Gothic 24 Bold: caps start ~9px below the text box top and are ~16px tall
-#define FONT_OFF 9
-#define FONT_CAP 16
+// Where capitals start below the text box top, and their height, per bar font
+#define FONT_OFF s_font_off
+#define FONT_CAP s_font_cap
+
+static void load_bar_font(void) {
+  if (s.bar_font == 1) {
+    if (!s_tomorrow) s_tomorrow = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TOMORROW_18));
+    s_font = s_tomorrow;
+    s_font_off = 4;
+    s_font_cap = 14;
+  } else {
+    if (s_tomorrow) {
+      fonts_unload_custom_font(s_tomorrow);
+      s_tomorrow = NULL;
+    }
+    s_font = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD);
+    s_font_off = 9;
+    s_font_cap = 16;
+  }
+}
 
 static void text_left(GContext *ctx, const char *str, int x, int cap_top) {
   graphics_draw_text(ctx, str, s_font, GRect(x, cap_top - FONT_OFF, 100, 32),
@@ -450,11 +475,14 @@ static void default_settings(void) {
     .batt_colors = 2,
     .weather_interval = 30,
     .wx_outline = 0,
+    .time_font = 0,
+    .bar_font = 0,
   };
 }
 
 static void apply_settings(void) {
   window_set_background_color(s_window, s.bg);
+  load_bar_font();
   load_digits();
   recolor_digits();
   update_time();
@@ -490,6 +518,8 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
   READ_U8(BattColors, batt_colors)
   READ_U8(WeatherInterval, weather_interval)
   READ_U8(WeatherOutline, wx_outline)
+  READ_U8(TimeFont, time_font)
+  READ_U8(BarFont, bar_font)
 
   if ((t = dict_find(iter, MESSAGE_KEY_WeatherTemp))) {
     s_wx.temp10 = tuple_int(t);
@@ -528,7 +558,6 @@ static void init(void) {
   if (persist_read_data(KEY_SETTINGS, &tmp, sizeof(tmp)) == (int)sizeof(tmp) && tmp.version == SETTINGS_VERSION) s = tmp;
   if (persist_read_data(KEY_WEATHER, &s_wx, sizeof(s_wx)) != (int)sizeof(s_wx)) memset(&s_wx, 0, sizeof(s_wx));
 
-  s_font = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD);
   s_batt_img = gdraw_command_image_create_with_resource(RESOURCE_ID_PDC_BATTERY_BG);
   s_charge_img = gdraw_command_image_create_with_resource(RESOURCE_ID_PDC_BATTERY_CHARGE);
 
@@ -558,6 +587,7 @@ static void deinit(void) {
   window_destroy(s_window);
   for (int i = 0; i < 11; i++) if (s_digit[i]) gbitmap_destroy(s_digit[i]);
   if (s_wx_img) gdraw_command_image_destroy(s_wx_img);
+  if (s_tomorrow) fonts_unload_custom_font(s_tomorrow);
   gdraw_command_image_destroy(s_batt_img);
   gdraw_command_image_destroy(s_charge_img);
 }

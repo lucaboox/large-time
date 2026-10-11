@@ -24,6 +24,14 @@ module.exports = [
     items: [
       { type: 'heading', defaultValue: 'Time' },
       {
+        type: 'select', messageKey: 'TimeFont', label: 'Time font', defaultValue: '0',
+        options: [{ label: 'Roboto', value: '0' }, { label: 'Tomorrow', value: '1' }]
+      },
+      {
+        type: 'select', messageKey: 'BarFont', label: 'Date, weather and battery font', defaultValue: '0',
+        options: [{ label: 'Gothic (watch default)', value: '0' }, { label: 'Tomorrow', value: '1' }]
+      },
+      {
         type: 'toggle', messageKey: 'LeadingZero', label: 'Leading zero on hours',
         description: 'Shows 07:51 instead of 7:51. 12/24-hour follows your watch setting.', defaultValue: false
       }
