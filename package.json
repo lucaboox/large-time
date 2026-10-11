@@ -33,6 +33,8 @@
       "TimeFont",
       "BarFont",
       "LeadingZero",
+      "ShowAmPm",
+      "AmPmColor",
       "TempUnit",
       "BattDisplay",
       "BattColors",

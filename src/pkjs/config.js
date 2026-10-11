@@ -42,6 +42,11 @@ module.exports = [
         options: [{ label: 'Gothic (watch default)', value: '0' }, { label: 'Tomorrow', value: '1' }]
       },
       {
+        type: 'toggle', messageKey: 'ShowAmPm', label: 'Show AM/PM under the time',
+        description: 'Only appears when your watch is set to 12-hour time.', defaultValue: true
+      },
+      { type: 'color', messageKey: 'AmPmColor', label: 'AM/PM color', defaultValue: 'AAAAAA' },
+      {
         type: 'toggle', messageKey: 'LeadingZero', label: 'Leading zero on hours',
         description: 'Shows 07:51 instead of 7:51. 12/24-hour follows your watch setting.', defaultValue: false
       }

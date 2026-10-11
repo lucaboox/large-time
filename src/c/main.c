@@ -11,7 +11,7 @@
 
 #define KEY_SETTINGS 1
 #define KEY_WEATHER  2
-#define SETTINGS_VERSION 5
+#define SETTINGS_VERSION 6
 #define DEG "\xc2\xb0"
 
 // Layout (144x168)
@@ -41,6 +41,8 @@ typedef struct {
   uint8_t bar_font;          // 0 = Gothic (system), 1 = Tomorrow
   uint8_t batt_display;      // 0 = icon + percent, 1 = percent only, 2 = icon only
   uint8_t wx_order;          // 0 = temperature then icon, 1 = icon then temperature
+  bool show_ampm;            // AM/PM under the time (12-hour mode only)
+  GColor ampm;
 } Settings;
 
 typedef struct {
@@ -54,6 +56,7 @@ static Layer *s_canvas;
 static Settings s;
 static Weather s_wx;
 static GFont s_font;
+static GFont s_ampm_font;
 static GFont s_tomorrow;       // custom bar font, loaded only when selected
 static int s_font_off, s_font_cap;
 
@@ -327,6 +330,11 @@ static void text_center(GContext *ctx, const char *str, int cx, int cap_top) {
                      GTextOverflowModeFill, GTextAlignmentCenter, NULL);
 }
 
+// AM/PM label: Gothic 18 Bold, caps start ~6px below the box top, ~12px tall
+#define AMPM_GAP 5
+#define AMPM_OFF 6
+#define AMPM_CAP 12
+
 static void draw_time(GContext *ctx, GRect b) {
   GBitmap *g[5];
   int n = 0, w = 0;
@@ -342,7 +350,17 @@ static void draw_time(GContext *ctx, GRect b) {
   w += gap * (n - 1);
   int digit_h = gbitmap_get_bounds(g[0]).size.h;
   int x = (b.size.w - w) / 2;
-  int y = TOP_H + LINE_W + (BOT_Y - TOP_H - LINE_W - digit_h) / 2;
+
+  // Center the digits, or the digits + AM/PM as one block
+  bool ampm = s.show_ampm && !clock_is_24h_style();
+  int block_h = digit_h + (ampm ? AMPM_GAP + AMPM_CAP : 0);
+  int y = TOP_H + LINE_W + (BOT_Y - TOP_H - LINE_W - block_h) / 2;
+  if (ampm) {
+    graphics_context_set_text_color(ctx, s.ampm);
+    graphics_draw_text(ctx, s_tm.tm_hour < 12 ? "AM" : "PM", s_ampm_font,
+                       GRect(0, y + digit_h + AMPM_GAP - AMPM_OFF, b.size.w, 24),
+                       GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+  }
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
   for (int i = 0; i < n; i++) {
     GSize sz = gbitmap_get_bounds(g[i]).size;
@@ -501,6 +519,8 @@ static void default_settings(void) {
     .bar_font = 0,
     .batt_display = 0,
     .wx_order = 0,
+    .show_ampm = true,
+    .ampm = GColorLightGray,
   };
 }
 
@@ -546,6 +566,8 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
   READ_U8(BarFont, bar_font)
   READ_U8(BattDisplay, batt_display)
   READ_U8(WeatherOrder, wx_order)
+  READ_BOOL(ShowAmPm, show_ampm)
+  READ_COLOR(AmPmColor, ampm)
 
   if ((t = dict_find(iter, MESSAGE_KEY_WeatherTemp))) {
     s_wx.temp10 = tuple_int(t);
@@ -584,6 +606,7 @@ static void init(void) {
   if (persist_read_data(KEY_SETTINGS, &tmp, sizeof(tmp)) == (int)sizeof(tmp) && tmp.version == SETTINGS_VERSION) s = tmp;
   if (persist_read_data(KEY_WEATHER, &s_wx, sizeof(s_wx)) != (int)sizeof(s_wx)) memset(&s_wx, 0, sizeof(s_wx));
 
+  s_ampm_font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   s_batt_img = gdraw_command_image_create_with_resource(RESOURCE_ID_PDC_BATTERY_BG);
   s_charge_img = gdraw_command_image_create_with_resource(RESOURCE_ID_PDC_BATTERY_CHARGE);
 
