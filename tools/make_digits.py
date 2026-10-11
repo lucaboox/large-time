@@ -60,7 +60,13 @@ def render(f, ch):
     ImageDraw.Draw(im).text((4 - bb[0], 4 - ref[1]), ch, font=f, fill=255)
     im = im.crop((0, 4, im.width, 4 + DIGIT_H))  # shared baseline and height
     ink = im.getbbox()
-    return im.crop((ink[0], 0, ink[2], DIGIT_H))
+    im = im.crop((ink[0], 0, ink[2], DIGIT_H))
+    if ch == ':':
+        # Fonts seat the colon low (bottom dot on the baseline); center it on the digits
+        dots = im.crop((0, ink[1], im.width, ink[3]))
+        im = Image.new('L', (im.width, DIGIT_H), 0)
+        im.paste(dots, (0, (DIGIT_H - dots.height) // 2))
+    return im
 
 
 def squeezed(glyphs, squeeze):
