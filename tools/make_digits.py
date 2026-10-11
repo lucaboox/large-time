@@ -57,7 +57,8 @@ def render(f, ch):
 
 
 def squeezed(glyphs, squeeze):
-    return {ch: im.resize((max(1, int(round(im.width * squeeze))), DIGIT_H), Image.LANCZOS)
+    # The colon keeps its natural width so its dots stay round
+    return {ch: im if ch == ':' else im.resize((max(1, int(round(im.width * squeeze))), DIGIT_H), Image.LANCZOS)
             for ch, im in glyphs.items()}
 
 
