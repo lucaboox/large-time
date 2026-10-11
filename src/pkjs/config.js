@@ -43,7 +43,7 @@ module.exports = [
       },
       {
         type: 'toggle', messageKey: 'ShowAmPm', label: 'Show AM/PM under the time',
-        description: 'Only appears when your watch is set to 12-hour time.', defaultValue: true
+        description: 'Small, in the space below the time (the time stays centered). Only in 12-hour mode.', defaultValue: true
       },
       { type: 'color', messageKey: 'AmPmColor', label: 'AM/PM color', defaultValue: 'AAAAAA' },
       {

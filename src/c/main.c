@@ -331,7 +331,6 @@ static void text_center(GContext *ctx, const char *str, int cx, int cap_top) {
 }
 
 // AM/PM label: Gothic 18 Bold, caps start ~6px below the box top, ~12px tall
-#define AMPM_GAP 5
 #define AMPM_OFF 6
 #define AMPM_CAP 12
 
@@ -351,14 +350,14 @@ static void draw_time(GContext *ctx, GRect b) {
   int digit_h = gbitmap_get_bounds(g[0]).size.h;
   int x = (b.size.w - w) / 2;
 
-  // Center the digits, or the digits + AM/PM as one block
-  bool ampm = s.show_ampm && !clock_is_24h_style();
-  int block_h = digit_h + (ampm ? AMPM_GAP + AMPM_CAP : 0);
-  int y = TOP_H + LINE_W + (BOT_Y - TOP_H - LINE_W - block_h) / 2;
-  if (ampm) {
+  // The time stays centered; AM/PM sits centered in the gap below it
+  int y = TOP_H + LINE_W + (BOT_Y - TOP_H - LINE_W - digit_h) / 2;
+  if (s.show_ampm && !clock_is_24h_style()) {
+    int below = y + digit_h;
+    int cap_top = below + (BOT_Y - below - AMPM_CAP) / 2;
     graphics_context_set_text_color(ctx, s.ampm);
     graphics_draw_text(ctx, s_tm.tm_hour < 12 ? "AM" : "PM", s_ampm_font,
-                       GRect(0, y + digit_h + AMPM_GAP - AMPM_OFF, b.size.w, 24),
+                       GRect(0, cap_top - AMPM_OFF, b.size.w, 24),
                        GTextOverflowModeFill, GTextAlignmentCenter, NULL);
   }
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
