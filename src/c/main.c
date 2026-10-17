@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------------
 // LargeTime: huge time in the middle, date bar on top, weather + battery bar
-// on the bottom. Built for the 144x168 Pebble Time.
+// on the bottom. Native layouts for Pebble Time and Pebble Time 2.
 //
 // Performance: one canvas layer, minute ticks only, strings formatted when
 // their data changes, digits are pre-rendered 2-bit images (recolored once
@@ -14,13 +14,46 @@
 #define SETTINGS_VERSION 6
 #define DEG "\xc2\xb0"
 
-// Layout (144x168)
+// Native display layouts. Emery uses separately rendered 92px digit resources.
+#if defined(PBL_PLATFORM_EMERY)
+#define SCREEN_W 200
+#define TOP_H 38
+#define BOT_Y 188
+#define LINE_W 5
+#define DIGIT_GAP 4
+#define ICON 34
+#define EDGE 5
+#define BAR_GOTHIC FONT_KEY_GOTHIC_28_BOLD
+#define BAR_TOMORROW RESOURCE_ID_FONT_TOMORROW_24
+#define GOTHIC_OFF 10
+#define GOTHIC_CAP 20
+#define TOMORROW_OFF 5
+#define TOMORROW_CAP 18
+#define AMPM_FONT FONT_KEY_GOTHIC_24_BOLD
+#define AMPM_OFF 9
+#define AMPM_CAP 16
+#else
+#define SCREEN_W 144
 #define TOP_H 28        // top bar height
 #define BOT_Y 138       // bottom bar starts here (line + 26px for the 25px icons)
 #define LINE_W 4        // divider line thickness
 #define DIGIT_GAP 3     // preferred space between digits (tightens for wide times)
 #define ICON 25         // native size of the line-art icons
 #define EDGE 4          // side margin in the bars
+#define BAR_GOTHIC FONT_KEY_GOTHIC_24_BOLD
+#define BAR_TOMORROW RESOURCE_ID_FONT_TOMORROW_18
+#define GOTHIC_OFF 9
+#define GOTHIC_CAP 16
+#define TOMORROW_OFF 4
+#define TOMORROW_CAP 14
+#define AMPM_FONT FONT_KEY_GOTHIC_18_BOLD
+#define AMPM_OFF 6
+#define AMPM_CAP 12
+#endif
+
+// PDC coordinates are authored on a 25px canvas. Resize vectors once on load.
+#define ICON_PX(v) (((v) * ICON + 12) / 25)
+#define BATTERY_W ICON_PX(26)
 
 // Weather icon ids (must match src/pkjs/index.js)
 enum {
@@ -170,11 +203,33 @@ static uint32_t wx_resource(uint8_t icon) {
   }
 }
 
+static bool resize_icon_command(GDrawCommand *cmd, uint32_t index, void *context) {
+  for (uint16_t i = 0; i < gdraw_command_get_num_points(cmd); i++) {
+    GPoint p = gdraw_command_get_point(cmd, i);
+    gdraw_command_set_point(cmd, i, GPoint(ICON_PX(p.x), ICON_PX(p.y)));
+  }
+  if (gdraw_command_get_type(cmd) == GDrawCommandTypeCircle) {
+    gdraw_command_set_radius(cmd, ICON_PX(gdraw_command_get_radius(cmd)));
+  }
+  gdraw_command_set_stroke_width(cmd, ICON_PX(gdraw_command_get_stroke_width(cmd)));
+  return true;
+}
+
+static GDrawCommandImage *load_icon(uint32_t resource_id) {
+  GDrawCommandImage *img = gdraw_command_image_create_with_resource(resource_id);
+  if (img && ICON != 25) {
+    gdraw_command_list_iterate(gdraw_command_image_get_command_list(img), resize_icon_command, NULL);
+    GSize size = gdraw_command_image_get_bounds_size(img);
+    gdraw_command_image_set_bounds_size(img, GSize(ICON_PX(size.w), ICON_PX(size.h)));
+  }
+  return img;
+}
+
 static void load_wx_icon(void) {
   uint8_t icon = s_wx.ts ? s_wx.icon : I_UNKNOWN;
   if (s_wx_img && icon == s_wx_img_icon) return;
   if (s_wx_img) gdraw_command_image_destroy(s_wx_img);
-  s_wx_img = gdraw_command_image_create_with_resource(wx_resource(icon));
+  s_wx_img = load_icon(wx_resource(icon));
   s_wx_img_icon = icon;
 }
 
@@ -280,14 +335,14 @@ static void draw_battery(GContext *ctx, int x, int y) {
   draw_pdc(ctx, s_batt_img, x, y, fill, outline);
   // TimeStyle's nub is a 2x3px stub; draw a bigger one so it reads as a battery
   graphics_context_set_fill_color(ctx, outline);
-  graphics_fill_rect(ctx, GRect(x + 23, y + 8, 3, 7), 0, GCornerNone);
+  graphics_fill_rect(ctx, GRect(x + ICON_PX(23), y + ICON_PX(8), ICON_PX(3), ICON_PX(7)), 0, GCornerNone);
   if (s_batt.is_charging || s_batt.is_plugged) {
     draw_pdc(ctx, s_charge_img, x, y, outline, fill);  // bolt uses inverted colors
     return;
   }
   int pct = s_batt.charge_percent > 0 ? s_batt.charge_percent : 5;
   graphics_context_set_fill_color(ctx, level);
-  graphics_fill_rect(ctx, GRect(x + 3, y + 8, 18 * pct / 100, 8), 0, GCornerNone);
+  graphics_fill_rect(ctx, GRect(x + ICON_PX(3), y + ICON_PX(8), ICON_PX(18) * pct / 100, ICON_PX(8)), 0, GCornerNone);
 }
 
 // ---------------------------------------------------------------------------
@@ -295,7 +350,7 @@ static void draw_battery(GContext *ctx, int x, int y) {
 // ---------------------------------------------------------------------------
 
 static int text_width(const char *str) {
-  return graphics_text_layout_get_content_size(str, s_font, GRect(0, 0, 144, 40),
+  return graphics_text_layout_get_content_size(str, s_font, GRect(0, 0, SCREEN_W, 40),
                                                GTextOverflowModeFill, GTextAlignmentLeft).w;
 }
 
@@ -305,18 +360,18 @@ static int text_width(const char *str) {
 
 static void load_bar_font(void) {
   if (s.bar_font == 1) {
-    if (!s_tomorrow) s_tomorrow = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TOMORROW_18));
+    if (!s_tomorrow) s_tomorrow = fonts_load_custom_font(resource_get_handle(BAR_TOMORROW));
     s_font = s_tomorrow;
-    s_font_off = 4;
-    s_font_cap = 14;
+    s_font_off = TOMORROW_OFF;
+    s_font_cap = TOMORROW_CAP;
   } else {
     if (s_tomorrow) {
       fonts_unload_custom_font(s_tomorrow);
       s_tomorrow = NULL;
     }
-    s_font = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD);
-    s_font_off = 9;
-    s_font_cap = 16;
+    s_font = fonts_get_system_font(BAR_GOTHIC);
+    s_font_off = GOTHIC_OFF;
+    s_font_cap = GOTHIC_CAP;
   }
 }
 
@@ -329,10 +384,6 @@ static void text_center(GContext *ctx, const char *str, int cx, int cap_top) {
   graphics_draw_text(ctx, str, s_font, GRect(cx - 40, cap_top - FONT_OFF, 80, 32),
                      GTextOverflowModeFill, GTextAlignmentCenter, NULL);
 }
-
-// AM/PM label: Gothic 18 Bold, caps start ~6px below the box top, ~12px tall
-#define AMPM_OFF 6
-#define AMPM_CAP 12
 
 static void draw_time(GContext *ctx, GRect b) {
   GBitmap *g[5];
@@ -357,7 +408,7 @@ static void draw_time(GContext *ctx, GRect b) {
     int cap_top = below + (BOT_Y - below - AMPM_CAP) / 2;
     graphics_context_set_text_color(ctx, s.ampm);
     graphics_draw_text(ctx, s_tm.tm_hour < 12 ? "AM" : "PM", s_ampm_font,
-                       GRect(0, cap_top - AMPM_OFF, b.size.w, 24),
+                       GRect(0, cap_top - AMPM_OFF, b.size.w, 32),
                        GTextOverflowModeFill, GTextAlignmentCenter, NULL);
   }
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
@@ -409,19 +460,19 @@ static void canvas_update(Layer *layer, GContext *ctx) {
   graphics_context_set_text_color(ctx, s.text);
   if (s.wx_order == 1) {
     draw_weather_icon(ctx, EDGE, iy);
-    text_left(ctx, s_temp, EDGE + ICON + 3, bcap);
+    text_left(ctx, s_temp, EDGE + ICON + ICON_PX(3), bcap);
   } else {
     text_left(ctx, s_temp, EDGE, bcap);
-    draw_weather_icon(ctx, EDGE + text_width(s_temp) + 2, iy);
+    draw_weather_icon(ctx, EDGE + text_width(s_temp) + ICON_PX(2), iy);
   }
 
-  // Battery icon is 26px wide with the nub
+  // Include the battery nub when aligning the icon.
   if (s.batt_display == 2) {
-    draw_battery(ctx, w - EDGE - (ICON + 1), iy);
+    draw_battery(ctx, w - EDGE - BATTERY_W, iy);
   } else {
     int pw = text_width(s_pct);
     text_left(ctx, s_pct, w - EDGE - pw, bcap);
-    if (s.batt_display == 0) draw_battery(ctx, w - EDGE - pw - 4 - (ICON + 1), iy);
+    if (s.batt_display == 0) draw_battery(ctx, w - EDGE - pw - ICON_PX(4) - BATTERY_W, iy);
   }
 }
 
@@ -605,9 +656,9 @@ static void init(void) {
   if (persist_read_data(KEY_SETTINGS, &tmp, sizeof(tmp)) == (int)sizeof(tmp) && tmp.version == SETTINGS_VERSION) s = tmp;
   if (persist_read_data(KEY_WEATHER, &s_wx, sizeof(s_wx)) != (int)sizeof(s_wx)) memset(&s_wx, 0, sizeof(s_wx));
 
-  s_ampm_font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
-  s_batt_img = gdraw_command_image_create_with_resource(RESOURCE_ID_PDC_BATTERY_BG);
-  s_charge_img = gdraw_command_image_create_with_resource(RESOURCE_ID_PDC_BATTERY_CHARGE);
+  s_ampm_font = fonts_get_system_font(AMPM_FONT);
+  s_batt_img = load_icon(RESOURCE_ID_PDC_BATTERY_BG);
+  s_charge_img = load_icon(RESOURCE_ID_PDC_BATTERY_CHARGE);
 
   time_t now = time(NULL);
   s_tm = *localtime(&now);

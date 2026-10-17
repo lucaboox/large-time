@@ -1,7 +1,9 @@
 # LargeTime
 
-A Pebble Time (basalt, 144x168) watchface: huge time in the middle, the date
-on top, weather and battery on the bottom.
+A watchface for Pebble Time (basalt, 144x168) and Pebble Time 2 (emery,
+200x228): huge time in the middle, the date on top, weather and battery on
+the bottom. Time 2 has its own native layout, larger fonts and vector icons,
+and digits rendered at 92px high; it does not need compatibility scaling.
 
 ```
  THU  [20]  AUG
@@ -24,6 +26,8 @@ on top, weather and battery on the bottom.
 Pebble's font system can't render glyphs this large, so the digits are
 pre-rendered images (`resources/digits`) with 4 alpha levels for smooth edges.
 The watch recolors them in place, so any time color works with no runtime cost.
+The SDK selects the `~emery.png` variants for Time 2 and the original 66px
+digits for Pebble Time. Both sets are rendered directly from the font files.
 Time fonts: Barlow Condensed (SIL OFL 1.1, https://github.com/jpt/barlow),
 Bebas Neue (SIL OFL 1.1, https://github.com/dharmatype/Bebas-Neue), Roboto Bold
 (Apache 2.0) and Tomorrow SemiBold (SIL OFL 1.1,
@@ -39,7 +43,12 @@ python tools/make_digits.py
 ```bash
 pebble build
 pebble install --emulator basalt
+# Or preview the native Pebble Time 2 build:
+pebble install --emulator emery
 ```
+
+The resulting `build/LargeTime.pbw` contains both platforms. Install this new
+bundle on Time 2 to use the native version.
 
 Weather and battery icons are from [TimeStyle](https://github.com/freakified/TimeStylePebble)
 by freakified (MIT, see `resources/icons/TIMESTYLE_LICENSE`). `src/pkjs/clay.js` is the

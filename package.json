@@ -1,7 +1,7 @@
 {
   "name": "large-time",
   "author": "lucab",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "keywords": [
     "pebble-app"
   ],
@@ -12,7 +12,8 @@
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": [
-      "basalt"
+      "basalt",
+      "emery"
     ],
     "watchapp": {
       "watchface": true
@@ -935,6 +936,13 @@
           "name": "FONT_TOMORROW_18",
           "file": "fonts/Tomorrow-SemiBold.ttf",
           "characterRegex": "[ -~\u00b0]"
+        },
+        {
+          "type": "font",
+          "name": "FONT_TOMORROW_24",
+          "file": "fonts/Tomorrow-SemiBold.ttf",
+          "characterRegex": "[ -~\u00b0]",
+          "targetPlatforms": ["emery"]
         },
         {
           "type": "raw",
