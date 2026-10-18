@@ -1,5 +1,6 @@
 build/
 node_modules/
+__pycache__/
 package-lock.json
 .lock-waf*
 *.pbw

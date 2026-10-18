@@ -28,6 +28,8 @@ pre-rendered images (`resources/digits`) with 4 alpha levels for smooth edges.
 The watch recolors them in place, so any time color works with no runtime cost.
 The SDK selects the `~emery.png` variants for Time 2 and the original 66px
 digits for Pebble Time. Both sets are rendered directly from the font files.
+Glyphs share a baseline and have transparent vertical padding so their
+rounded and antialiased edges are preserved.
 Time fonts: Barlow Condensed (SIL OFL 1.1, https://github.com/jpt/barlow),
 Bebas Neue (SIL OFL 1.1, https://github.com/dharmatype/Bebas-Neue), Roboto Bold
 (Apache 2.0) and Tomorrow SemiBold (SIL OFL 1.1,
@@ -36,6 +38,7 @@ bar text. Fonts are only narrowed when a time wouldn't otherwise fit. Regenerate
 
 ```bash
 python tools/make_digits.py
+python -m unittest discover -s tools
 ```
 
 ## Build

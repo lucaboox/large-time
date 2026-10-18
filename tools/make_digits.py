@@ -25,6 +25,7 @@ OUT = os.path.join(HERE, '..', 'resources', 'digits')
 # (resource tag, ink height, widest time, fitting gap)
 DISPLAYS = [('', 66, 140, 2), ('~emery', 92, 196, 3)]
 MAX_SQUEEZE = 1.0   # natural width; fonts are only narrowed if a time wouldn't fit
+VERTICAL_PAD = 2   # preserve antialiased edges at the top and bottom
 
 # (file prefix, font file)
 # Order matches the TimeFont setting values in src/pkjs/config.js
@@ -43,29 +44,42 @@ TIMES_12H = ['%d:%02d' % (h, m) for h in range(1, 13) for m in range(60)]
 TIMES_24H = ['%02d:%02d' % (h, m) for h in range(24) for m in range(60)]
 
 
+def digit_bounds(font):
+    bounds = [font.getbbox(ch) for ch in '0123456789']
+    return min(bb[1] for bb in bounds), max(bb[3] for bb in bounds)
+
+
 def font_for_height(path, height):
-    size = height
-    for _ in range(8):
-        f = ImageFont.truetype(path, size)
-        bb = f.getbbox('0')
-        size = max(1, int(round(size * height / (bb[3] - bb[1]))))
-    return ImageFont.truetype(path, size)
+    # Integer font sizes can jump over the requested height. Choose the largest
+    # size that fits every digit, rather than rounding repeatedly around '0'.
+    low, high = 1, height * 4
+    while low < high:
+        size = (low + high + 1) // 2
+        font = ImageFont.truetype(path, size)
+        top, bottom = digit_bounds(font)
+        if bottom - top <= height:
+            low = size
+        else:
+            high = size - 1
+    return ImageFont.truetype(path, low)
 
 
 def render(f, ch, height):
-    """Unsqueezed glyph, cropped to its ink horizontally, height pixels tall."""
-    ref = f.getbbox('0')
+    """Render the full glyph on a shared baseline with a transparent border."""
+    top, bottom = digit_bounds(f)
+    assert bottom - top <= height
     bb = f.getbbox(ch)
-    im = Image.new('L', (bb[2] - bb[0] + 8, height + 8), 0)
-    ImageDraw.Draw(im).text((4 - bb[0], 4 - ref[1]), ch, font=f, fill=255)
-    im = im.crop((0, 4, im.width, 4 + height))  # shared baseline and height
+    canvas_h = height + 2 * VERTICAL_PAD
+    im = Image.new('L', (bb[2] - bb[0] + 8, canvas_h), 0)
+    baseline_y = VERTICAL_PAD + (height - (bottom - top)) // 2 - top
+    ImageDraw.Draw(im).text((4 - bb[0], baseline_y), ch, font=f, fill=255)
     ink = im.getbbox()
-    im = im.crop((ink[0], 0, ink[2], height))
+    im = im.crop((ink[0], 0, ink[2], canvas_h))
     if ch == ':':
         # Fonts seat the colon low (bottom dot on the baseline); center it on the digits
         dots = im.crop((0, ink[1], im.width, ink[3]))
-        im = Image.new('L', (im.width, height), 0)
-        im.paste(dots, (0, (height - dots.height) // 2))
+        im = Image.new('L', (im.width, canvas_h), 0)
+        im.paste(dots, (0, (canvas_h - dots.height) // 2))
     return im
 
 
