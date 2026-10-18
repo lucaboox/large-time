@@ -11,6 +11,7 @@
 
 #define KEY_SETTINGS 1
 #define KEY_WEATHER  2
+#define KEY_BACKLIGHT 3
 #define SETTINGS_VERSION 6
 #define DEG "\xc2\xb0"
 
@@ -77,6 +78,17 @@ typedef struct {
   bool show_ampm;            // AM/PM under the time (12-hour mode only)
   GColor ampm;
 } Settings;
+
+#if defined(PBL_RGB_BACKLIGHT)
+// Kept separate so upgrading preserves the existing Settings v6 record.
+typedef struct {
+  uint8_t version;
+  bool custom;
+  uint32_t rgb;
+} BacklightSettings;
+
+static BacklightSettings s_backlight;
+#endif
 
 typedef struct {
   int16_t temp10;  // tenths of a degree Celsius
@@ -547,6 +559,29 @@ static void bt_handler(bool connected) {
 // Settings
 // ---------------------------------------------------------------------------
 
+static void load_backlight_settings(void) {
+#if defined(PBL_RGB_BACKLIGHT)
+  s_backlight = (BacklightSettings){ .version = 1, .custom = false, .rgb = 0xFFFFFF };
+  BacklightSettings saved;
+  if (persist_read_data(KEY_BACKLIGHT, &saved, sizeof(saved)) == (int)sizeof(saved) && saved.version == 1) {
+    s_backlight = saved;
+    s_backlight.rgb &= 0xFFFFFF;
+  }
+#endif
+}
+
+static void apply_backlight_color(void) {
+#if defined(PBL_RGB_BACKLIGHT)
+  if (s_backlight.custom) light_set_color_rgb888(s_backlight.rgb);
+  else light_set_system_color();
+#endif
+}
+
+static void app_focus_changed(bool focused) {
+  // A notification/modal temporarily returns the light to the system color.
+  if (focused) apply_backlight_color();
+}
+
 static void default_settings(void) {
   s = (Settings){
     .version = SETTINGS_VERSION,
@@ -575,6 +610,7 @@ static void default_settings(void) {
 }
 
 static void apply_settings(void) {
+  apply_backlight_color();
   window_set_background_color(s_window, s.bg);
   load_bar_font();
   load_digits();
@@ -589,6 +625,7 @@ static void apply_settings(void) {
 static void inbox_received(DictionaryIterator *iter, void *context) {
   Tuple *t;
   bool changed = false;
+  bool backlight_changed = false;
 
 #define READ_COLOR(key, field) \
   if ((t = dict_find(iter, MESSAGE_KEY_##key))) { s.field = GColorFromHEX(tuple_int(t)); changed = true; }
@@ -619,6 +656,18 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
   READ_BOOL(ShowAmPm, show_ampm)
   READ_COLOR(AmPmColor, ampm)
 
+#if defined(PBL_RGB_BACKLIGHT)
+  if ((t = dict_find(iter, MESSAGE_KEY_UseCustomBacklight))) {
+    s_backlight.custom = tuple_int(t) != 0;
+    backlight_changed = true;
+  }
+  if ((t = dict_find(iter, MESSAGE_KEY_BacklightColor))) {
+    s_backlight.rgb = (uint32_t)tuple_int(t) & 0xFFFFFF;
+    backlight_changed = true;
+  }
+  if (backlight_changed) persist_write_data(KEY_BACKLIGHT, &s_backlight, sizeof(s_backlight));
+#endif
+
   if ((t = dict_find(iter, MESSAGE_KEY_WeatherTemp))) {
     s_wx.temp10 = tuple_int(t);
     if ((t = dict_find(iter, MESSAGE_KEY_WeatherIcon))) s_wx.icon = tuple_int(t);
@@ -630,8 +679,8 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
 
   if (changed) {
     persist_write_data(KEY_SETTINGS, &s, sizeof(s));
-    apply_settings();
   }
+  if (changed || backlight_changed) apply_settings();
 }
 
 // ---------------------------------------------------------------------------
@@ -652,6 +701,7 @@ static void window_unload(Window *window) {
 
 static void init(void) {
   default_settings();
+  load_backlight_settings();
   Settings tmp;
   if (persist_read_data(KEY_SETTINGS, &tmp, sizeof(tmp)) == (int)sizeof(tmp) && tmp.version == SETTINGS_VERSION) s = tmp;
   if (persist_read_data(KEY_WEATHER, &s_wx, sizeof(s_wx)) != (int)sizeof(s_wx)) memset(&s_wx, 0, sizeof(s_wx));
@@ -673,6 +723,7 @@ static void init(void) {
   app_message_open(384, 64);
 
   apply_settings();
+  app_focus_service_subscribe(app_focus_changed);
 
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
   battery_state_service_subscribe(battery_handler);
@@ -680,6 +731,10 @@ static void init(void) {
 }
 
 static void deinit(void) {
+  app_focus_service_unsubscribe();
+#if defined(PBL_RGB_BACKLIGHT)
+  light_set_system_color();
+#endif
   tick_timer_service_unsubscribe();
   battery_state_service_unsubscribe();
   connection_service_unsubscribe();

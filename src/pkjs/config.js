@@ -22,6 +22,21 @@ module.exports = [
   {
     type: 'section',
     items: [
+      { type: 'heading', defaultValue: 'Pebble Time 2 backlight' },
+      {
+        type: 'toggle', messageKey: 'UseCustomBacklight', label: 'Custom backlight color', defaultValue: false,
+        description: 'Pebble Time 2 only. Turn off to use the color selected in your watch settings.'
+      },
+      {
+        type: 'color', messageKey: 'BacklightColor', label: 'Backlight color', defaultValue: 'FFFFFF',
+        description: 'Used when the backlight turns on while LargeTime is showing. Brightness and the light timeout follow your watch settings.'
+      }
+    ]
+  },
+
+  {
+    type: 'section',
+    items: [
       { type: 'heading', defaultValue: 'Time' },
       {
         type: 'select', messageKey: 'TimeFont', label: 'Time font', defaultValue: '5',

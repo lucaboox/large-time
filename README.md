@@ -18,8 +18,25 @@ and digits rendered at 92px high; it does not need compatibility scaling.
 - 12/24-hour follows the watch setting; optional leading zero
 - Time font: Barlow Condensed (5 weights), Bebas Neue, Roboto or Tomorrow; bar text: Gothic or Tomorrow
 - Colors for background, time, bars, accent (lines + date box), text, icons
+- Optional custom RGB backlight color on the new Pebble Time 2, with a switch
+  to use the watch's default backlight color instead
 - Weather from [Open-Meteo](https://open-meteo.com) (no API key), GPS or a city name, C/F
 - Battery colors by level (green / yellow at 50% / red at 20%), Bluetooth disconnect vibration
+
+## Pebble Time 2 backlight color
+
+In LargeTime's phone configuration, find **Pebble Time 2 backlight**, enable
+**Custom backlight color**, choose **Backlight color**, and save. Turn the
+switch off to restore the backlight color selected in the watch's settings.
+
+The color applies whenever the backlight turns on while LargeTime is showing.
+The watch still controls brightness, wrist-gesture activation, and timeout.
+LargeTime reapplies the tint when returning from a notification and releases
+it when you leave the face. This setting only affects RGB-backlight hardware;
+the original Pebble Time keeps its normal backlight.
+
+Backlight preferences are saved separately, so existing face colors, fonts,
+weather settings and other preferences are preserved when upgrading.
 
 ## How the big digits work
 
